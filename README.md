@@ -1,193 +1,261 @@
-Generative AI — Assignment 03
-AI4009 | Spring 2026 | Batch 22F
+# Generative AI — Assignment 03
+**AI4009 | Spring 2026 | Batch 22F**
 
-📁 Repository Structure
+## Repository Structure
+
 GenAI_Ass03/
-│
-├── q1-tackling-mode-collapse-in-gans-dcgan-vs-wgan.ipynb       Question 1: DCGAN vs WGAN-GP
-├── Q2_3339_3859.ipynb                                          Question 2: Pix2Pix
-├── Q3_3339_3859.ipynb                                          Question 3: CycleGAN
-└── app.py                                                      Gradio App (CycleGAN Deployment)
 
-🧠 Question 1: Tackling Mode Collapse in GANs (DCGAN vs WGAN-GP)
+q1-tackling-mode-collapse-in-gans-dcgan-vs-wgan.ipynb (Question 1: DCGAN vs WGAN-GP)
 
- 🎯 Objective
-Design and implement a GAN system that addresses mode collapse using:
-Baseline: Deep Convolutional GAN (DCGAN)
-Improved: Wasserstein GAN with Gradient Penalty (WGAN-GP)
+Q2_3339_3859.ipynb (Question 2: Pix2Pix)
 
-📦 Datasets
-| Dataset | Link |
- 🎮 Pokemon Sprites | [Kaggle](https://www.kaggle.com/datasets/jackemartin/pokemon-sprites) 
- 🎌 Anime Faces (64×64) | [Kaggle](https://www.kaggle.com/datasets/soumikrakshit/anime-faces) 
+Q3_3339_3859.ipynb (Question 3: CycleGAN)
 
+app.py (CycleGAN Gradio Deployment)
 
-🏗️ Architecture
- DCGAN (Baseline)
-- Input Noise Vector (z): 100-dimensional
-- Image Size: 64 × 64
-- Generator: Transposed Conv → BatchNorm → ReLU → Tanh
-- Discriminator: Conv → LeakyReLU → Sigmoid
+## Question 1: Tackling Mode Collapse in GANs
 
-WGAN-GP (Advanced)
-- Critic replaces Discriminator (no sigmoid)
-- Loss: Wasserstein Loss + Gradient Penalty (λ = 10)
-- Critic updates per Generator update: 5
+### Objective
+Compare DCGAN and WGAN-GP to reduce mode collapse and improve image diversity.
 
+### Datasets
+Pokemon Sprites
 
-⚙️ Training Config
-IMG_SIZE    = 64
-NOISE_DIM   = 100
-BATCH_SIZE  = 64
-LR          = 0.0002
-BETAS       = (0.5, 0.999)
+Anime Faces (64×64)
+
+### Architectures
+
+**DCGAN**
+Input noise: 100-dim
+
+Image size: 64×64
+
+Generator: ConvTranspose → BatchNorm → ReLU → Tanh
+
+Discriminator: Conv → LeakyReLU → Sigmoid
+
+**WGAN-GP**
+Critic replaces discriminator
+
+Wasserstein loss with gradient penalty (λ=10)
+
+5 critic updates per generator update
+
+### Training Configuration
+
+IMG_SIZE = 64
+
+NOISE_DIM = 100
+
+BATCH_SIZE = 64
+
+LR = 0.0002
+
+BETAS = (0.5, 0.999)
+
 EPOCHS_DCGAN = 50
-EPOCHS_WGAN  = 60
-LAMBDA_GP   = 10
-N_CRITIC    = 5
-SUBSET      = 5000
 
+EPOCHS_WGAN = 60
 
-🔧 Techniques Used
- ✅ Mixed Precision Training (`torch.cuda.amp`)
- ✅ Dual GPU (Kaggle T4 × 2)
- ✅ Checkpoint saving every 10 epochs
- ✅ Dataset subset for faster training
+LAMBDA_GP = 10
 
-	
-📊 Results
-- Generator and Discriminator/Critic loss plots across epochs
-- 5–10 generated image samples per model
-- Visual comparison: DCGAN vs WGAN-GP diversity
+N_CRITIC = 5
 
+SUBSET = 5000
 
-🎨 Question 2: Doodle-to-Real Image Translation using Pix2Pix
-🎯 Objective
-Paired image-to-image translation using Conditional GAN (Pix2Pix):
-- Sketch → Realistic Image
-- Grayscale → Colored Image
+### Techniques
+Mixed precision training
 
+Dual GPU (T4 × 2)
 
-📦 Datasets
-| Dataset | Link |
-| 👤 CUHK Face Sketch (CUFS) | [Kaggle](https://www.kaggle.com/datasets/arbazkhan971/cuhk-face-sketch-database-cufs) |
-| 🖌️ Anime Sketch Colorization | [Kaggle](https://www.kaggle.com/datasets/ktaebum/anime-sketch-colorization-pair) |
+Checkpoint saving every 10 epochs
 
+Dataset subset for faster training
 
-🏗️ Architecture
-Generator — U-Net
-- Encoder-Decoder with skip connections
-- Input: Sketch / Grayscale (256 × 256)
-- Output: Realistic / Colored image
+### Results
+Loss curves for generator and discriminator/critic
 
-Discriminator — PatchGAN
-- Patch-based classification (16 × 16 patches)
-- Classifies whether each patch is real or fake
+Generated image samples
 
+Visual diversity comparison between DCGAN and WGAN-GP
 
-⚙️ Training Config
-IMG_SIZE   = 256
+---
+
+## Question 2: Doodle-to-Real Image Translation using Pix2Pix
+
+### Objective
+Paired image-to-image translation:
+
+Sketch → Real Image
+
+Grayscale → Color Image
+
+### Datasets
+CUHK Face Sketch (CUFS)
+
+Anime Sketch Colorization
+
+### Architecture
+
+**Generator (U-Net)**
+Encoder-decoder with skip connections
+
+Input: 256×256 sketch/grayscale image
+
+Output: realistic/colored image
+
+**Discriminator (PatchGAN)**
+Patch-based classification
+
+Classifies image patches as real or fake
+
+### Training Configuration
+
+IMG_SIZE = 256
+
 BATCH_SIZE = 16–32
-LR         = 0.0002
-BETAS      = (0.5, 0.999)
 
+LR = 0.0002
 
- 📉 Loss Functions
-Total Loss = Adversarial Loss (GAN) + λ × L1 Loss (Reconstruction)
+BETAS = (0.5, 0.999)
 
-🔧 Techniques Used
-- ✅ Mixed Precision Training
-- ✅ Paired supervised learning
-- ✅ Checkpoint saving every 5–10 epochs
+### Loss Function
 
+Total Loss = GAN Loss + λ × L1 Reconstruction Loss
 
- 📊 Results & Evaluation
-| Metric | Description |
-| SSIM | Structural Similarity Index |
-| PSNR | Peak Signal-to-Noise Ratio |
-| Visual | Input vs Generated vs Ground Truth |
+### Techniques
+Mixed precision training
 
-🔄 Question 3: Unpaired Image Translation using CycleGAN
+Paired supervised learning
 
-🎯 Objective
-Unpaired image-to-image translation using CycleGAN:
-- Sketch → Photo
-- Photo → Sketch
-- Structural consistency via cycle constraints
+Checkpoint saving every 5–10 epochs
 
-📦 Datasets
-| Dataset | Link |
-| ✏️ TU-Berlin Sketch | [HuggingFace](https://huggingface.co/datasets/sdiaeyu6n/tu-berlin) |
-| 🖼️ Sketchy Dataset | [Kaggle](https://www.kaggle.com/datasets/sharanyasundar/sketchy-dataset) |
-| ✍️ Google QuickDraw | [Kaggle](https://www.kaggle.com/c/quickdraw-doodle-recognition/data) |
+### Evaluation
+SSIM
 
-🏗️ Architecture
+PSNR
 
-Generators (ResNet-based)
-| Generator | Task |
-| G_AB | Sketch → Photo |
-| G_BA | Photo → Sketch |
+Visual comparison (Input, Generated, Ground Truth)
 
-- 6 ResNet Blocks (optimized for Kaggle)
-- Image Size: 128 × 128
+---
 
-Discriminators (PatchGAN)
-| Discriminator | Domain |
-| D_A | Classifies Sketch domain |
-| D_B | Classifies Photo domain |
+## Question 3: Unpaired Image Translation using CycleGAN
 
-⚙️ Training Config
-IMG_SIZE   = 128
+### Objective
+Unpaired image translation:
+
+Sketch → Photo
+
+Photo → Sketch
+
+Cycle consistency for structure preservation
+
+### Datasets
+TU-Berlin Sketch
+
+Sketchy Dataset
+
+Google QuickDraw
+
+### Architecture
+
+**Generators**
+G_AB: Sketch → Photo
+
+G_BA: Photo → Sketch
+
+6 ResNet blocks
+
+Image size: 128×128
+
+**Discriminators**
+D_A: Sketch domain
+
+D_B: Photo domain
+
+PatchGAN based
+
+### Training Configuration
+
+IMG_SIZE = 128
+
 BATCH_SIZE = 4–8
-LR         = 0.0002
-BETAS      = (0.5, 0.999)
+
+LR = 0.0002
+
+BETAS = (0.5, 0.999)
+
 N_RESBLOCKS = 6
 
+### Loss Function
 
-📉 Loss Functions
 Total Loss = Adversarial Loss + Cycle Consistency Loss + Identity Loss
 
-🔧 Techniques Used
-✅ Mixed Precision Training
-✅ Dual GPU (T4 × 2)
-✅ Frequent checkpointing
-✅ Dataset subset for memory efficiency
+### Techniques
+Mixed precision training
 
-📊 Results & Evaluation
-| Metric | Description |
-| SSIM | Structural Similarity Index |
-| PSNR | Peak Signal-to-Noise Ratio |
-| Visual | Input → Translated → Reconstructed |
-🚀 App Deployment
+Dual GPU (T4 × 2)
 
-CycleGAN Gradio App (app.py)
-A real-time Sketch → Photo conversion app built with Gradio.
-Features
-- Upload any sketch image
-- Instantly generates a realistic photo using the trained CycleGAN (`G_BA`)
-- Clean, simple UI
+Frequent checkpointing
 
-Run Locally
+Dataset subset for memory efficiency
+
+### Evaluation
+SSIM
+
+PSNR
+
+Visual translation and reconstruction results
+
+---
+
+## Gradio App Deployment
+
+Real-time Sketch → Photo conversion using the trained CycleGAN model.
+
+### Features
+Upload a sketch image
+
+Generate a realistic photo instantly
+
+Simple Gradio interface
+
+### Run
+
 pip install gradio torch torchvision pillow
+
 python app.py
-Note: Place the trained checkpoint cyc_G_BA_ep50.pth in the same directory before running.
 
-🛠️ Environment Setup
+Place `cyc_G_BA_ep50.pth` in the project directory before running.
 
-| Tool | Version / Details |
-| Platform | [Kaggle](https://www.kaggle.com/) |
-| GPU | T4 × 2 (Dual GPU) |
-| Framework | PyTorch |
-| Mixed Precision | `torch.cuda.amp` |
-| App Framework | Gradio |
+---
 
-Install Dependencies
+## Environment
+
+Platform: Kaggle
+
+GPU: T4 × 2
+
+Framework: PyTorch
+
+Mixed Precision: torch.cuda.amp
+
+App Framework: Gradio
+
+### Dependencies
+
 pip install torch torchvision gradio scikit-image pillow numpy matplotlib
 
-📌 Notes
-- All models trained on Kaggle with GPU T4 × 2
-- Dataset subsets used where needed to fit GPU memory
-- Checkpoints saved every 5–10 epochs
-- Mixed precision used throughout for speed and memory efficiency
+---
 
-AI4009 — Generative AI | Spring 2026 | FAST-NUCES*
+## Notes
+
+Models trained on Kaggle using dual T4 GPUs.
+
+Dataset subsets were used when needed for memory efficiency.
+
+Checkpoints saved every 5–10 epochs.
+
+Mixed precision training used throughout for faster training and lower memory usage.
+
+**AI4009 — Generative AI | FAST-NUCES**
