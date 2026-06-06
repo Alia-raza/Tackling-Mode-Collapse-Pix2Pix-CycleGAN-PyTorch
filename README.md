@@ -1,5 +1,6 @@
 Generative AI — Assignment 03
 AI4009 | Spring 2026 | Batch 22F
+
 📁 Repository Structure
 GenAI_Ass03/
 │
@@ -20,8 +21,8 @@ Improved: Wasserstein GAN with Gradient Penalty (WGAN-GP)
  🎮 Pokemon Sprites | [Kaggle](https://www.kaggle.com/datasets/jackemartin/pokemon-sprites) 
  🎌 Anime Faces (64×64) | [Kaggle](https://www.kaggle.com/datasets/soumikrakshit/anime-faces) 
 
-🏗️ Architecture
 
+🏗️ Architecture
  DCGAN (Baseline)
 - Input Noise Vector (z): 100-dimensional
 - Image Size: 64 × 64
@@ -32,6 +33,8 @@ WGAN-GP (Advanced)
 - Critic replaces Discriminator (no sigmoid)
 - Loss: Wasserstein Loss + Gradient Penalty (λ = 10)
 - Critic updates per Generator update: 5
+
+
 ⚙️ Training Config
 IMG_SIZE    = 64
 NOISE_DIM   = 100
@@ -43,15 +46,20 @@ EPOCHS_WGAN  = 60
 LAMBDA_GP   = 10
 N_CRITIC    = 5
 SUBSET      = 5000
+
+
 🔧 Techniques Used
  ✅ Mixed Precision Training (`torch.cuda.amp`)
  ✅ Dual GPU (Kaggle T4 × 2)
  ✅ Checkpoint saving every 10 epochs
  ✅ Dataset subset for faster training
+
+	
 📊 Results
 - Generator and Discriminator/Critic loss plots across epochs
 - 5–10 generated image samples per model
 - Visual comparison: DCGAN vs WGAN-GP diversity
+
 
 🎨 Question 2: Doodle-to-Real Image Translation using Pix2Pix
 🎯 Objective
@@ -59,12 +67,14 @@ Paired image-to-image translation using Conditional GAN (Pix2Pix):
 - Sketch → Realistic Image
 - Grayscale → Colored Image
 
+
 📦 Datasets
 | Dataset | Link |
 | 👤 CUHK Face Sketch (CUFS) | [Kaggle](https://www.kaggle.com/datasets/arbazkhan971/cuhk-face-sketch-database-cufs) |
 | 🖌️ Anime Sketch Colorization | [Kaggle](https://www.kaggle.com/datasets/ktaebum/anime-sketch-colorization-pair) |
-🏗️ Architecture
 
+
+🏗️ Architecture
 Generator — U-Net
 - Encoder-Decoder with skip connections
 - Input: Sketch / Grayscale (256 × 256)
@@ -74,11 +84,13 @@ Discriminator — PatchGAN
 - Patch-based classification (16 × 16 patches)
 - Classifies whether each patch is real or fake
 
+
 ⚙️ Training Config
 IMG_SIZE   = 256
 BATCH_SIZE = 16–32
 LR         = 0.0002
 BETAS      = (0.5, 0.999)
+
 
  📉 Loss Functions
 Total Loss = Adversarial Loss (GAN) + λ × L1 Loss (Reconstruction)
@@ -87,6 +99,8 @@ Total Loss = Adversarial Loss (GAN) + λ × L1 Loss (Reconstruction)
 - ✅ Mixed Precision Training
 - ✅ Paired supervised learning
 - ✅ Checkpoint saving every 5–10 epochs
+
+
  📊 Results & Evaluation
 | Metric | Description |
 | SSIM | Structural Similarity Index |
@@ -157,6 +171,7 @@ Run Locally
 pip install gradio torch torchvision pillow
 python app.py
 Note: Place the trained checkpoint cyc_G_BA_ep50.pth in the same directory before running.
+
 🛠️ Environment Setup
 
 | Tool | Version / Details |
